@@ -1,112 +1,72 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PHN Prediction</title>
+    <title>Herpes Zoster/PHN Prediction Data Entry - Updated</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <style>
         /* ------------------------------------------------------------------ */
-        /* 1. 全局颜色变量定义 (医疗绿主题) */
+        /* 样式定义 (保持一致) */
         /* ------------------------------------------------------------------ */
         :root {
-            /* 主色调：医疗绿 */
             --color-primary: #00A389;
-            /* 按钮悬停和强调色：深医疗绿 */
             --color-primary-dark: #008771;
-            /* 背景和边框浅色调 */
             --color-light-accent: #E0F2F1;
-            /* 页面背景 */
             --color-body-bg: #f5f7fa;
         }
 
-        /* ------------------------------------------------------------------ */
-        /* 2. 页面基础样式 */
-        /* ------------------------------------------------------------------ */
-        body {
-            background-color: var(--color-body-bg);
-        }
+        body { background-color: var(--color-body-bg); }
 
-        /* 顶部标题颜色和样式 (与按钮颜色一致) */
         .page-title {
-            text-align: center;
-            margin-top: 30px;
-            margin-bottom: 5px;
-            font-weight: 700;
-            color: var(--color-primary); /* 使用新的主色调 */
-            font-size: 2.5rem;
+            text-align: center; margin-top: 30px; margin-bottom: 5px;
+            font-weight: 700; color: var(--color-primary); font-size: 2.5rem;
         }
 
-        /* 辅助说明文字样式 */
-        .text-center.text-muted {
-            margin-bottom: 30px;
-        }
+        .text-center.text-muted { margin-bottom: 30px; }
 
-        /* ------------------------------------------------------------------ */
-        /* 3. 卡片和表单样式优化 */
-        /* ------------------------------------------------------------------ */
         .card {
-            border-radius: 12px;
-            padding: 30px; /* 增大内边距 */
-            margin-bottom: 25px; /* 增大卡片间距 */
-            border: none; /* 移除默认边框 */
+            border-radius: 12px; padding: 30px; margin-bottom: 25px; border: none;
         }
 
-        /* 卡片内部的子标题 */
         .card h4 {
-            color: #343a40;
-            font-weight: 600;
-            border-bottom: 2px solid var(--color-light-accent); /* 底部浅绿色分隔线 */
-            padding-bottom: 10px;
-            margin-bottom: 20px;
+            color: #343a40; font-weight: 600;
+            border-bottom: 2px solid var(--color-light-accent);
+            padding-bottom: 10px; margin-bottom: 20px;
         }
 
-        /* 输入框 Label 样式 */
-        label {
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
+        label { font-weight: 500; margin-bottom: 5px; }
 
-        /* 增强输入框聚焦时的样式 */
         .form-control:focus {
-            border-color: var(--color-primary); /* 聚焦时边框变医疗绿 */
-            /* 覆盖 Bootstrap 默认蓝色阴影，改为医疗绿的浅色阴影 */
+            border-color: var(--color-primary);
             box-shadow: 0 0 0 0.25rem rgba(0, 163, 137, 0.25);
         }
 
-        /* ------------------------------------------------------------------ */
-        /* 4. 按钮样式覆盖 (从蓝色改为医疗绿) */
-        /* ------------------------------------------------------------------ */
-
-        /* 覆盖 Bootstrap 的 .btn-primary 样式 */
         .btn-primary {
-            --bs-btn-color: #fff;
             --bs-btn-bg: var(--color-primary);
             --bs-btn-border-color: var(--color-primary);
-
-            /* 悬停 (Hover) 状态 */
-            --bs-btn-hover-color: #fff;
             --bs-btn-hover-bg: var(--color-primary-dark);
             --bs-btn-hover-border-color: var(--color-primary-dark);
         }
 
-        /* Reset 按钮 (btn-outline-secondary) 的颜色调整，使其与主色调一致 */
         .btn-outline-secondary {
             --bs-btn-color: #6c757d;
             --bs-btn-border-color: #ced4da;
-
-            /* Hover 状态: 使用主题色调 */
             --bs-btn-hover-color: var(--color-primary-dark);
             --bs-btn-hover-bg: var(--color-light-accent);
             --bs-btn-hover-border-color: var(--color-light-accent);
         }
 
-        /* 按钮组的布局间距 */
-        .action-btn-group {
-            margin-top: 30px;
-            margin-bottom: 50px;
+        .action-btn-group { margin-top: 30px; margin-bottom: 50px; }
+
+        /* 强调血细胞信息，使用浅色背景分隔 */
+        .lab-separator {
+            border-top: 1px solid var(--color-light-accent);
+            margin-top: 20px;
+            margin-bottom: 20px;
+            width: 100%;
         }
     </style>
 </head>
@@ -115,94 +75,270 @@
 
 <div class="container">
 
-    <h1 class="page-title">PHN Prediction</h1>
+    <h1 class="page-title">Herpes Zoster/PHN Prediction Data Entry</h1>
     <p class="text-center text-muted">
-        Enter the following test results to predict migraine likelihood.
+        Enter patient basic characteristics, comorbidities, and laboratory data below.
     </p>
 
     <form action="/predict" method="POST">
 
         <div class="card shadow-sm">
             <h4>Basic Information</h4>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <label>Age</label>
-                    <input type="number" class="form-control" name="age" required placeholder="Enter Age in years">
+            <div class="row g-3">
+
+                <div class="col-md-3">
+                    <label for="age">Age (years) *</label>
+                    <input type="number" class="form-control" id="age" name="age" required placeholder="Age">
                 </div>
 
-                <div class="col-md-6">
-                    <label>Sex</label>
-                    <select class="form-control" name="sex" required>
+                <div class="col-md-3">
+                    <label for="gender">Gender (Male: 1, Female: 2) *</label>
+                    <select class="form-control" id="gender" name="gender" required>
                         <option value="" disabled selected>Select Gender</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
+                        <option value="1">Male (1)</option>
+                        <option value="2">Female (2)</option>
                     </select>
                 </div>
+
+                <div class="col-md-3">
+                    <label for="bmi">BMI</label>
+                    <input type="number" step="0.1" class="form-control" id="bmi" name="bmi" placeholder="Body Mass Index">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="baseline_vas">Baseline_VAS<label>
+                    <input type="number" step="0.1" class="form-control" id="baseline_vas" name="baseline_vas_score" placeholder="VAS Score (0-10)">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="dm">Diabetes Mellitus (DM)</label>
+                    <select class="form-control" id="dm" name="dm">
+                        <option value="" disabled selected>Select Status (Yes/No)</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="hypertension">Hypertension</label>
+                    <select class="form-control" id="hypertension" name="hypertension">
+                        <option value="" disabled selected>Select Status (Yes/No)</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="chd">Coronary Heart Disease (CHD)</label>
+                    <select class="form-control" id="chd" name="chd">
+                        <option value="" disabled selected>Select Status (Yes/No)</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="nsaids_aceta">NSAIDs/Acetaminophen</label>
+                    <select class="form-control" id="nsaids_aceta" name="nsaids_acetaminophen_use">
+                        <option value="" disabled selected>Select Status (Yes/No)</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="oxy_aceta">Oxycodone/Acetaminophen</label>
+                    <select class="form-control" id="oxy_aceta" name="oxycodone_acetaminophen_use">
+                        <option value="" disabled selected>Select Status (Yes/No)</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3">
+                    <label for="pcs_score">PCS</label>
+                    <input type="number" step="0.1" class="form-control" id="pcs_score" name="pcs_score" placeholder="Pain Catastrophizing Scale">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="mcs_score">MCS</label>
+                    <input type="number" step="0.1" class="form-control" id="mcs_score" name="mcs_ics_score" placeholder="MCS/ICS Value">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="psqi_score">PSQI</label>
+                    <input type="number" step="0.1" class="form-control" id="psqi_score" name="psqi_score" placeholder="PSQI Score">
+                </div>
+
             </div>
         </div>
 
-        <div class="card shadow-sm">
-            <h4>Blood Test</h4>
-
-            <div class="row mt-3">
-                <div class="col-md-4">
-                    <label>WBC</label>
-                    <input class="form-control" name="WBC" placeholder="White Blood Cell (x10^9/L)">
-                </div>
-                <div class="col-md-4">
-                    <label>RBC</label>
-                    <input class="form-control" name="RBC" placeholder="Red Blood Cell (x10^12/L)">
-                </div>
-                <div class="col-md-4">
-                    <label>PLT</label>
-                    <input class="form-control" name="PLT" placeholder="Platelet (x10^9/L)">
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-4">
-                    <label>HGB</label>
-                    <input class="form-control" name="HGB" placeholder="Hemoglobin (g/dL)">
-                </div>
-                <div class="col-md-4">
-                    <label>HCT</label>
-                    <input class="form-control" name="HCT" placeholder="Hematocrit (%)">
-                </div>
-                </div>
-        </div>
 
         <div class="card shadow-sm">
-            <h4>Urine Test</h4>
+            <h4>Blood Information (Hematology, Coagulation & Biochemistry)</h4>
+            <div class="row g-3">
 
-            <div class="row mt-3">
+                <h5 class="col-12 mt-0">Hematology</h5>
+
                 <div class="col-md-3">
-                    <label>pH</label>
-                    <input class="form-control" name="pH" placeholder="Range: 4.6 - 8.0">
+                    <label for="ly_count">LY# </label>
+                    <input type="number" step="0.01" class="form-control" id="ly_count" name="ly_count" placeholder="Lymphocyte Count">
                 </div>
 
                 <div class="col-md-3">
-                    <label>PRO</label>
-                    <input class="form-control" name="PRO" placeholder="Protein">
+                    <label for="mono_count">MO#</label>
+                    <input type="number" step="0.01" class="form-control" id="mono_count" name="mono_count" placeholder="Monocyte Count">
                 </div>
 
                 <div class="col-md-3">
-                    <label>GLU</label>
-                    <input class="form-control" name="GLU" placeholder="Glucose">
+                    <label for="neut_count">NEUT#</label>
+                    <input type="number" step="0.01" class="form-control" id="neut_count" name="neut_count" placeholder="Neutrophil Count">
                 </div>
 
                 <div class="col-md-3">
-                    <label>BLO</label>
-                    <input class="form-control" name="BLO" placeholder="Blood">
+                    <label for="eo_count">EO#</label>
+                    <input type="number" step="0.01" class="form-control" id="eo_count" name="eo_count" placeholder="Eosinophil Count">
                 </div>
+
+                <div class="col-md-3">
+                    <label for="ba_count">BA#</label>
+                    <input type="number" step="0.01" class="form-control" id="ba_count" name="ba_count" placeholder="Basophil Count">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="ly_percent">LY%</label>
+                    <input type="number" step="0.1" class="form-control" id="ly_percent" name="ly_percent" placeholder="Lymphocyte Percent">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="mo_percent">MO%</label>
+                    <input type="number" step="0.1" class="form-control" id="mo_percent" name="mo_percent" placeholder="Monocyte Percent">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="ba_percent">BA%</label>
+                    <input type="number" step="0.1" class="form-control" id="ba_percent" name="ba_percent" placeholder="Basophil Percent">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="rbc">RBC</label>
+                    <input type="number" step="0.01" class="form-control" id="rbc" name="rbc" placeholder="Red Blood Cell">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="mcv">MCV</label>
+                    <input type="number" step="0.1" class="form-control" id="mcv" name="mcv" placeholder="MCV">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="mchc">MCHC</label>
+                    <input type="number" step="0.1" class="form-control" id="mchc" name="mchc" placeholder="MCHC">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="rdw_cv">RDW-CV</label>
+                    <input type="number" step="0.1" class="form-control" id="rdw_cv" name="rdw_cv" placeholder="RDW-CV">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="plt">PLT</label>
+                    <input type="number" step="1" class="form-control" id="plt" name="plt" placeholder="Platelet Count">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="mpv">MPV</label>
+                    <input type="number" step="0.1" class="form-control" id="mpv" name="mpv" placeholder="MPV">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="aptt_time">APTT(time) (s)</label>
+                    <input type="number" step="0.1" class="form-control" id="aptt_time" name="aptt_time" placeholder="APTT">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="tt_time">TT(time) (s)</label>
+                    <input type="number" step="0.1" class="form-control" id="tt_time" name="tt_time" placeholder="Thrombin Time">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="alt">ALT</label>
+                    <input type="number" step="1" class="form-control" id="alt" name="alt" placeholder="Alanine Aminotransferase">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="ast">AST</label>
+                    <input type="number" step="1" class="form-control" id="ast" name="ast" placeholder="Aspartate Aminotransferase">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="tp">TP</label>
+                    <input type="number" step="0.1" class="form-control" id="tp" name="tp" placeholder="Total Protein">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="glu">Glu</label>
+                    <input type="number" step="0.1" class="form-control" id="glu" name="glu" placeholder="Glucose">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="urea">Urea</label>
+                    <input type="number" step="0.1" class="form-control" id="urea" name="urea" placeholder="Urea">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="cr">Cr</label>
+                    <input type="number" step="1" class="form-control" id="cr" name="cr" placeholder="Creatinine">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="co2">CO2</label>
+                    <input type="number" step="0.1" class="form-control" id="co2" name="co2" placeholder="Carbon Dioxide">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="na">Na</label>
+                    <input type="number" step="1" class="form-control" id="na" name="na" placeholder="Sodium">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="k">K</label>
+                    <input type="number" step="0.1" class="form-control" id="k" name="k" placeholder="Potassium">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="glb">GLB</label>
+                    <input type="number" step="0.1" class="form-control" id="glb" name="glb" placeholder="Globulin">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="a_g">A/G</label>
+                    <input type="number" step="0.01" class="form-control" id="a_g" name="a_g" placeholder="Albumin/Globulin Ratio">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="dbil">DBIL</label>
+                    <input type="number" step="0.1" class="form-control" id="dbil" name="dbil" placeholder="Direct Bilirubin">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="ibil">IBIL</label>
+                    <input type="number" step="0.1" class="form-control" id="ibil" name="ibil" placeholder="Indirect Bilirubin">
+                </div>
+
+                <div class="col-md-3">
+                    <label for="egfr">eGFR</label>
+                    <input type="number" step="1" class="form-control" id="egfr" name="egfr" placeholder="eGFR">
+                </div>
+
             </div>
         </div>
 
         <div class="row action-btn-group">
             <div class="col-md-6 mb-3 mb-md-0">
-                <button type="reset" class="btn btn-primary w-100 btn-lg fw-bold">Reset</button>
+                <button type="reset" class="btn btn-outline-secondary w-100 btn-lg fw-bold">Reset</button>
             </div>
             <div class="col-md-6">
-                <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold">Predict</button>
+                <button type="submit" class="btn btn-primary w-100 btn-lg fw-bold">Predict PHN Risk</button>
             </div>
         </div>
 
@@ -210,9 +346,4 @@
 </div>
 
 </body>
-
-<script>
-
-</script>
-
 </html>
