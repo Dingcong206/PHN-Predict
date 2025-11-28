@@ -1,52 +1,117 @@
-from flask import Flask, render_template, request, redirect, url_for
+import joblib
+import numpy as np
+from flask import Flask, request, render_template, redirect, url_for
+
+# 1. 模型加载 (Model Loading)
+MODEL_PATH = 'final_model.joblib'
+try:
+    # 应用程序启动时加载模型，只需加载一次
+    model = joblib.load(MODEL_PATH)
+    print("Model loaded successfully.")
+except Exception as e:
+    # 如果模型加载失败，打印错误并退出
+    print(f"Model loading failed: {e}")
+    model = None
 
 app = Flask(__name__)
 
 
-# 模拟模型预测结果和 SHAP 数据 (实际应用中，这里会调用你的PHN模型)
-def mock_phn_prediction(data):
-    # 模拟预测结果：风险等级和概率
-    import random
-    risk_level = random.choice(['High Risk', 'Low Risk'])
-    probability = round(random.uniform(90.0, 99.99), 2) if risk_level == 'High Risk' else round(
-        random.uniform(5.0, 30.0), 2)
+# 定义一个帮助函数来处理空字符串、None 和转换为 float，同时确保 Yes/No 转换为 1/0
+def get_feature_value(field_name, default_value=0.0):
+    """
+    从表单中获取字段值，处理空值，并将分类变量转换为浮点数。
+    """
+    value = request.form.get(field_name)
+    if value is None or value.strip() == '' or value.strip() == 'Select Gender' or value.strip() == 'Select Status (Yes/No)':
+        return default_value
 
-    # 模拟SHAP值数据 (用于生成可解释性图表的数据)
-    shap_data = [
-        {'feature': 'Age', 'value': 1.51, 'effect': 'Positive'},
-        {'feature': 'WBC', 'value': 0.85, 'effect': 'Positive'},
-        {'feature': 'pH', 'value': -0.41, 'effect': 'Negative'},
-        {'feature': 'HCT', 'value': 0.37, 'effect': 'Positive'},
-        {'feature': 'GLU', 'value': -0.16, 'effect': 'Negative'},
-        # ... 更多特征
-    ]
+    # 分类变量转换为 1/0
+    if value in ('Yes', '1'):
+        return 1.0
+    # 女性是 '2'，
+    if value in ('No', '2'):
+        return 0.0
 
-    return {
-        'risk_level': 'PHN ' + risk_level,
-        'probability': probability,
-        'color_class': 'risk-high' if risk_level == 'High Risk' else 'risk-low',
-        'shap_data': shap_data
-    }
+    # 数值变量转换为 float
+    try:
+        return float(value)
+    except ValueError:
+        print(f"Warning: Could not convert input for {field_name} to float: {value}")
+        return default_value
 
 
-@app.route('/', methods=['GET'])
-def index():
-    # 渲染输入表单页面
+# --- 路由 1: 输入表单页面  ---
+@app.route('/')
+def home():
+    """渲染指标输入表单页面"""
     return render_template('index.html')
 
 
+# --- 路由 2: 预测处理 (Route for Prediction) ---
 @app.route('/predict', methods=['POST'])
 def predict():
-    # 1. 获取表单数据
-    form_data = request.form
-
-    # 2. 运行模型模拟
-    result = mock_phn_prediction(form_data)
-
-    # 3. 跳转到结果页面并传递数据
-    return render_template('results.html', result=result)
+    if model is None:
+        return "模型未加载，无法预测。", 500
 
 
+    try:
+        # 1. 仅获取模型所需的 7 个特征，并严格按照训练时的顺序排列：
+        # ["Age", "Baseline_VAS", "PCS", "PSQI", "MCS", "RBC", "APTT(time)"]
+
+        input_features = [
+            get_feature_value('age'),  # Age
+            get_feature_value('baseline_vas_score'),  # Baseline_VAS
+            get_feature_value('pcs_score'),  # PCS
+            get_feature_value('psqi_score'),  # PSQI
+            get_feature_value('mcs_ics_score'),  # MCS
+            get_feature_value('rbc'),  # RBC
+            get_feature_value('aptt_time')  # APTT(time)
+        ]
+
+        # 2. 数据预处理
+        # 转换为模型需要的 2D numpy 数组格式: [[feature1, feature2, ...]]
+        final_features = np.array(input_features).reshape(1, -1)
+
+
+        # 3. 进行预测
+        prediction_proba = model.predict_proba(final_features)[:, 1]  # 取 PHN 阳性的概率 (第二列)
+        prediction_class = model.predict(final_features)[0]  # 取预测的类别 (0 或 1)
+
+        # 4. 跳转到结果页面，传递类别和概率
+
+        return redirect(url_for('result',
+                                prediction_class=str(prediction_class),
+                                prediction_proba=f"{prediction_proba[0]:.4f}"))
+
+    except Exception as e:
+        # 如果获取数据或转换失败，返回错误信息
+        print(f"Prediction logic failed: {e}")
+        return f"Prediction failed. Please check the input format or feature processing logic.：{e}", 400
+
+
+# --- 路由 3: 结果展示页面 ---
+@app.route('/result')
+def result():
+    """显示预测结果页面"""
+    # 从 URL 参数中获取预测结果
+    prediction_class = request.args.get('prediction_class', 'N/A')
+    prediction_proba = request.args.get('prediction_proba', 'N/A')
+
+    # 将类别结果转换为易读的文本
+    if prediction_class == '1':
+        result_text = "High Risk"
+    elif prediction_class == '0':
+        result_text = "Low Risk"
+    else:
+        result_text = "Abnormal prediction results"
+
+    # 渲染结果页面
+    return render_template('results.html',
+                           prediction_class_text=result_text,
+                           prediction_proba=prediction_proba)
+
+
+# 启动应用
 if __name__ == '__main__':
-    # 确保你有一个名为 'templates' 的文件夹，并将 index.html 和 result.html 放在其中
+
     app.run(debug=True)
