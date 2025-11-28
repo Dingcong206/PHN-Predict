@@ -99,7 +99,7 @@ def result():
 
     # 将类别结果转换为易读的文本
     if prediction_class == '1':
-        result_text = "High Risk"
+        result_text = "high Risk"
     elif prediction_class == '0':
         result_text = "Low Risk"
     else:
