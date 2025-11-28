@@ -95,7 +95,7 @@
                     <div class="row g-3">
 
                         <div class="col-md-3">
-                            <label for="age">Age (years) *</label>
+                            <label for="age">Age *</label>
                             <input type="number" class="form-control" id="age" name="age" required placeholder="Age" min="0">
                         </div>
 
@@ -110,16 +110,16 @@
 
                         <div class="col-md-3">
                             <label for="bmi">BMI</label>
-                            <input type="number" step="0.1" class="form-control" id="bmi" name="bmi" placeholder="Body Mass Index">
+                            <input type="number" step="0.01" class="form-control" id="bmi" name="bmi" placeholder="Body Mass Index">
                         </div>
 
                         <div class="col-md-3">
                             <label for="baseline_vas">Baseline_VAS *</label>
-                            <input type="number" step="0.5" class="form-control" id="baseline_vas" name="baseline_vas_score" required placeholder="VAS Score (0-10)" min="0" max="10">
+                            <input type="number" step="1" class="form-control" id="baseline_vas" name="baseline_vas_score" required placeholder="VAS Score (0-10)" min="0" max="10">
                         </div>
 
                         <div class="col-md-3">
-                            <label for="dm">Diabetes Mellitus (DM)</label>
+                            <label for="dm">DM</label>
                             <select class="form-control" id="dm" name="dm">
                                 <option value="" disabled selected>Select Status</option>
                                 <option value="Yes">Yes</option>
@@ -137,7 +137,7 @@
                         </div>
 
                         <div class="col-md-3">
-                            <label for="chd">Coronary Heart Disease (CHD)</label>
+                            <label for="chd">CHD</label>
                             <select class="form-control" id="chd" name="chd">
                                 <option value="" disabled selected>Select Status</option>
                                 <option value="Yes">Yes</option>
@@ -165,17 +165,17 @@
 
                         <div class="col-md-3">
                             <label for="pcs_score">PCS *</label>
-                            <input type="number" step="1" class="form-control" id="pcs_score" name="pcs_score" placeholder="Pain Catastrophizing Scale (0-80)" min="0" max="80" required>
+                            <input type="number" step="0.01" class="form-control" id="pcs_score" name="pcs_score" placeholder="Pain Catastrophizing Scale"  required>
                         </div>
 
                         <div class="col-md-3">
                             <label for="mcs_score">MCS *</label>
-                            <input type="number" step="1" class="form-control" id="mcs_score" name="mcs_ics_score" placeholder="MCS Score" required>
+                            <input type="number" step="0.01" class="form-control" id="mcs_score" name="mcs_ics_score" placeholder="MCS Score" required>
                         </div>
 
                         <div class="col-md-3">
                             <label for="psqi_score">PSQI *</label>
-                            <input type="number" step="1" class="form-control" id="psqi_score" name="psqi_score" placeholder="PSQI Score (0-21)" min="0" max="21" required>
+                            <input type="number" step="1" class="form-control" id="psqi_score" name="psqi_score" placeholder="PSQI Score" min="0" max="21" required>
                         </div>
 
                     </div>
@@ -240,7 +240,7 @@
 
                         <div class="col-md-3">
                             <label for="mchc">MCHC</label>
-                            <input type="number" step="0.1" class="form-control" id="mchc" name="mchc" placeholder="MCHC">
+                            <input type="number" step="1" class="form-control" id="mchc" name="mchc" placeholder="MCHC">
                         </div>
 
                         <div class="col-md-3">
@@ -275,7 +275,7 @@
 
                         <div class="col-md-3">
                             <label for="ast">AST</label>
-                            <input type="number" step="1" class="form-control" id="ast" name="ast" placeholder="Aspartate Aminotransferase">
+                            <input type="number" step="0.1" class="form-control" id="ast" name="ast" placeholder="Aspartate Aminotransferase">
                         </div>
 
                         <div class="col-md-3">
@@ -285,7 +285,7 @@
 
                         <div class="col-md-3">
                             <label for="glu">Glu</label>
-                            <input type="number" step="0.1" class="form-control" id="glu" name="glu" placeholder="Glucose">
+                            <input type="number" step="0.01" class="form-control" id="glu" name="glu" placeholder="Glucose">
                         </div>
 
                         <div class="col-md-3">
@@ -295,7 +295,7 @@
 
                         <div class="col-md-3">
                             <label for="cr">Cr</label>
-                            <input type="number" step="1" class="form-control" id="cr" name="cr" placeholder="Creatinine">
+                            <input type="number" step="0.1" class="form-control" id="cr" name="cr" placeholder="Creatinine">
                         </div>
 
                         <div class="col-md-3">
@@ -305,12 +305,12 @@
 
                         <div class="col-md-3">
                             <label for="na">Na</label>
-                            <input type="number" step="1" class="form-control" id="na" name="na" placeholder="Sodium">
+                            <input type="number" step="0.1" class="form-control" id="na" name="na" placeholder="Sodium">
                         </div>
 
                         <div class="col-md-3">
                             <label for="k">K</label>
-                            <input type="number" step="0.1" class="form-control" id="k" name="k" placeholder="Potassium">
+                            <input type="number" step="0.01" class="form-control" id="k" name="k" placeholder="Potassium">
                         </div>
 
                         <div class="col-md-3">
@@ -320,12 +320,12 @@
 
                         <div class="col-md-3">
                             <label for="a_g">A/G</label>
-                            <input type="number" step="0.01" class="form-control" id="a_g" name="a_g" placeholder="Albumin/Globulin Ratio">
+                            <input type="number" step="0.1" class="form-control" id="a_g" name="a_g" placeholder="Albumin/Globulin Ratio">
                         </div>
 
                         <div class="col-md-3">
                             <label for="dbil">DBIL</label>
-                            <input type="number" step="0.1" class="form-control" id="dbil" name="dbil" placeholder="Direct Bilirubin">
+                            <input type="number" step="0.01" class="form-control" id="dbil" name="dbil" placeholder="Direct Bilirubin">
                         </div>
 
                         <div class="col-md-3">
@@ -335,7 +335,7 @@
 
                         <div class="col-md-3">
                             <label for="egfr">eGFR</label>
-                            <input type="number" step="1" class="form-control" id="egfr" name="egfr" placeholder="eGFR">
+                            <input type="number" step="0.01" class="form-control" id="egfr" name="egfr" placeholder="eGFR">
                         </div>
 
                     </div>
