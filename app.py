@@ -78,8 +78,8 @@ def predict():
         means = scaler.mean_[[0, 4, 5, 6, 18, 33]]
         scales = scaler.scale_[[0, 4, 5, 6, 18, 33]]
 
-        x_num = test_data[:, :6]
-        x_cat = test_data[:, [-1]]
+        x_num = final_features[:, :6]
+        x_cat = final_features[:, [-1]]
 
         x_num_scaled = (x_num - means) / scales
         x_final = np.concatenate([x_num_scaled, x_cat], axis=1)
