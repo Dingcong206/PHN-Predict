@@ -60,13 +60,12 @@ def predict():
 
         input_features = [
             get_feature_value('age'),  # Age
-            get_feature_value('baseline_vas_score'),  # Baseline_VAS
             get_feature_value('pcs_score'),  # PCS
             get_feature_value('mcs_ics_score'),  # MCS
             get_feature_value('psqi_score'),  # PSQI
             get_feature_value('rbc'),  # RBC
-            get_feature_value('aptt_time')  # APTT(time)
-
+            get_feature_value('aptt_time'),  # APTT(time)
+            get_feature_value('baseline_vas_score')  # Baseline_VAS
         ]
 
         # 2. 数据预处理
