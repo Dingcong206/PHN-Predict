@@ -9,7 +9,7 @@ PREPROCESS_FILE = 'preprocess_pipeline.joblib'
 try:
     # 应用程序启动时加载模型，只需加载一次
     model = joblib.load(MODEL_PATH)
-    preprocess = safe_joblib_load(PREPROCESS_FILE)
+    preprocess = joblib.load(PREPROCESS_FILE)
     print("Model loaded successfully.")
 except Exception as e:
     # 如果模型加载失败，打印错误并退出
