@@ -60,21 +60,19 @@ def predict():
 
         input_features = [
             get_feature_value('age'),  # Age
-            get_feature_value('baseline_vas_score'),  # Baseline_VAS
             get_feature_value('pcs_score'),  # PCS
             get_feature_value('mcs_ics_score'),  # MCS
             get_feature_value('psqi_score'),  # PSQI
             get_feature_value('rbc'),  # RBC
-            get_feature_value('aptt_time')  # APTT(time)
-
+            get_feature_value('aptt_time'),  # APTT(time)
+            get_feature_value('baseline_vas_score')  # Baseline_VAS
         ]
 
         # 2. 数据预处理
         # 转换为模型需要的 2D numpy 数组格式: [[feature1, feature2, ...]]
         final_features = np.array(input_features).reshape(1, -1)
 
-        preprocess = joblib.load('preprocess_pipeline.joblib')
-        scaler = preprocess.named_transformers_["num"]
+        scaler = joblib.load('scaler.joblib')
         means = scaler.mean_[[0, 4, 5, 6, 18, 33]]
         scales = scaler.scale_[[0, 4, 5, 6, 18, 33]]
 
