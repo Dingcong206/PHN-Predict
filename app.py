@@ -68,7 +68,7 @@ def predict():
             get_feature_value('psqi_score'),  # PSQI
             get_feature_value('rbc'),  # RBC
             get_feature_value('aptt_time'),  # APTT(time)
-            get_feature_value('baseline_vas_score'),  # Baseline_VAS
+            get_feature_value('baseline_vas_score')  # Baseline_VAS
         ]
 
         # 2. 数据预处理
