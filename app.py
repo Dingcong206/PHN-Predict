@@ -4,12 +4,10 @@ from flask import Flask, request, render_template, redirect, url_for
 
 # 1. 模型加载 (Model Loading)
 MODEL_PATH = 'final_model.joblib'
-PREPROCESS_FILE = 'preprocess_pipeline.joblib'
 
 try:
     # 应用程序启动时加载模型，只需加载一次
     model = joblib.load(MODEL_PATH)
-    preprocess = joblib.load(PREPROCESS_FILE)
     print("Model loaded successfully.")
 except Exception as e:
     # 如果模型加载失败，打印错误并退出
@@ -56,7 +54,6 @@ def predict():
     if model is None:
         return "模型未加载，无法预测。", 500
 
-
     try:
         # 1. 仅获取模型所需的 7 个特征，并严格按照训练时的顺序排列：
         # ["Age", "Baseline_VAS", "PCS", "PSQI", "MCS", "RBC", "APTT(time)"]
@@ -75,6 +72,7 @@ def predict():
         # 转换为模型需要的 2D numpy 数组格式: [[feature1, feature2, ...]]
         final_features = np.array(input_features).reshape(1, -1)
 
+        preprocess = joblib.load('preprocess_pipeline.joblib')
         scaler = preprocess.named_transformers_["num"]
         means = scaler.mean_[[0, 4, 5, 6, 18, 33]]
         scales = scaler.scale_[[0, 4, 5, 6, 18, 33]]
