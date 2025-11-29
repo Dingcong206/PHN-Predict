@@ -4,9 +4,12 @@ from flask import Flask, request, render_template, redirect, url_for
 
 # 1. 模型加载 (Model Loading)
 MODEL_PATH = 'final_model.joblib'
+PREPROCESS_FILE = 'preprocess_pipeline.joblib'
+
 try:
     # 应用程序启动时加载模型，只需加载一次
     model = joblib.load(MODEL_PATH)
+    preprocess = safe_joblib_load(PREPROCESS_FILE)
     print("Model loaded successfully.")
 except Exception as e:
     # 如果模型加载失败，打印错误并退出
@@ -60,22 +63,31 @@ def predict():
 
         input_features = [
             get_feature_value('age'),  # Age
-            get_feature_value('baseline_vas_score'),  # Baseline_VAS
             get_feature_value('pcs_score'),  # PCS
-            get_feature_value('psqi_score'),  # PSQI
             get_feature_value('mcs_ics_score'),  # MCS
+            get_feature_value('psqi_score'),  # PSQI
             get_feature_value('rbc'),  # RBC
             get_feature_value('aptt_time')  # APTT(time)
+            get_feature_value('baseline_vas_score'),  # Baseline_VAS
         ]
 
         # 2. 数据预处理
         # 转换为模型需要的 2D numpy 数组格式: [[feature1, feature2, ...]]
         final_features = np.array(input_features).reshape(1, -1)
 
+        scaler = preprocess.named_transformers_["num"]
+        means = scaler.mean_[[0, 4, 5, 6, 18, 33]]
+        scales = scaler.scale_[[0, 4, 5, 6, 18, 33]]
+
+        x_num = test_data[:, :6]
+        x_cat = test_data[:, [-1]]
+
+        x_num_scaled = (x_num - means) / scales
+        x_final = np.concatenate([x_num_scaled, x_cat], axis=1)
 
         # 3. 进行预测
-        prediction_proba = model.predict_proba(final_features)[:, 1]  # 取 PHN 阳性的概率 (第二列)
-        prediction_class = model.predict(final_features)[0]  # 取预测的类别 (0 或 1)
+        prediction_proba = model.predict_proba(x_final)[:, 1]  # 取 PHN 阳性的概率 (第二列)
+        prediction_class = model.predict(x_final)[0]  # 取预测的类别 (0 或 1)
 
         # 4. 跳转到结果页面，传递类别和概率
 
